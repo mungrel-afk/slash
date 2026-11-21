@@ -1,0 +1,31 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+AccessModifierOffset: -4      # public:/private: line up with the class brace
+IndentCaseLabels: true        # indent case labels inside switch
+NamespaceIndentation: All     # indent contents of namespaces
+IndentPPDirectives: BeforeHash
+
+# Braces on their own line (Allman)
+BreakBeforeBraces: Allman
+
+# Line breaking / wrapping
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+
+# Spacing / pointers
+PointerAlignment: Left        # int* p;  not  int *p;
+SpaceBeforeParens: ControlStatements
+
+# Includes
+SortIncludes: true
