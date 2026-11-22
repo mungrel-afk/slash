@@ -1,7 +1,5 @@
 # Slash
 
- Game about slashing, dodging, and parrying
-
 ## Building
 
 Requires `g++` and GNU `make`. The Makefile detects the OS and links the matching
