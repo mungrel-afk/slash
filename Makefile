@@ -1,16 +1,28 @@
 CXX      = g++
 CXXFLAGS = -std=c++17 -Wall -Iinclude
-LDFLAGS  = -Llib
-LIBS     = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 
 SRC      = $(wildcard src/*.cpp)
-TARGET   = Slash
+
+ifeq ($(OS),Windows_NT)
+    TARGET  = Slash.exe
+    LDFLAGS = -Llib/windows
+    LIBS    = -lraylib -lopengl32 -lgdi32 -lwinmm
+    RUN     = "$(CURDIR)/$(TARGET)"
+    RM      = powershell -NoProfile -Command Remove-Item -Force
+else
+    TARGET  = Slash
+    LDFLAGS = -Llib/linux
+    LIBS    = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+    RUN     = ./$(TARGET)
+    RM      = rm -f
+endif
+
+.PHONY: run build clean
 
 run: build
-	./$(TARGET)
+	$(RUN)
 
 build:
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS) $(LIBS)
 
 clean:
-	rm -f $(TARGET)
-
+	$(if $(wildcard $(TARGET)),$(RM) $(TARGET))
