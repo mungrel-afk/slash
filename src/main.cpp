@@ -46,7 +46,7 @@ int main()
 
     /* Player Stuff */
     Entity player = {
-        .position_vector = {screenWidth / 2, screenHeight / 2}, .width = 32, .height = 32, .speed = 32.0f, .health = 3};
+        .position_vector = {screenWidth / 2, screenHeight / 2}, .width = 32, .height = 32, .speed = 128.0f, .health = 3};
 
     Entity enemy = {.position_vector = {100, 100}, .width = 32, .height = 64, .speed = 16.0f, .health = 1};
 
@@ -75,6 +75,12 @@ int main()
         if (IsKeyDown(KEY_D))
         {
             player.position_vector.x += player.speed * deltaTime;
+        }
+        if(IsKeyDown(KEY_LEFT_SHIFT))
+        {
+            player.speed = 192;
+        }else{
+            player.speed = 128;
         }
 
         /* Attack */
