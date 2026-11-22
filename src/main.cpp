@@ -48,6 +48,8 @@ int main()
     Entity player = {
         .position_vector = {screenWidth / 2, screenHeight / 2}, .width = 32, .height = 32, .speed = 32.0f, .health = 3};
 
+    Entity enemy = {.position_vector = {100, 100}, .width = 32, .height = 64, .speed = 16.0f, .health = 1};
+
     //--------------------------------------------------------------------------------------
     //
     // Main game loop
@@ -57,38 +59,63 @@ int main()
         // Draw
         //----------------------------------------------------------------------------------
         //
-        DrawRectangle(player.position_vector.x, player.position_vector.y, player.width, player.height, WHITE);
 
         if (IsKeyDown(KEY_W))
         {
-            player.position_vector.y -= player.speed;
+            player.position_vector.y -= player.speed * deltaTime;
         }
         if (IsKeyDown(KEY_A))
         {
-            player.position_vector.x -= player.speed;
+            player.position_vector.x -= player.speed * deltaTime;
         }
         if (IsKeyDown(KEY_S))
         {
-            player.position_vector.y += player.speed;
+            player.position_vector.y += player.speed * deltaTime;
         }
         if (IsKeyDown(KEY_D))
         {
-            player.position_vector.x += player.speed;
+            player.position_vector.x += player.speed * deltaTime;
+        }
+
+        /* Attack */
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            // Get a vector from player to target enemy
+            float player_to_enemy_distance = Vector2Distance(player.position_vector, enemy.position_vector);
+
+            // check if the length to the target is less than the attack range
+
+            // check if player is facing enemy direction
+
+            // use half angle cosine to see if enemy is within attack cone
         }
 
         if (IsKeyPressed(KEY_R))
         {
             player.position_vector.x = screenWidth / 2;
             player.position_vector.y = screenHeight / 2;
+            player.health--;
         }
+
+        BeginDrawing();
 
         /* Draw Player Hearts */
         for (int i = 1; i <= player.health; i++)
         {
-            DrawRectangle(i*17, 10, 16, 16, RED);
+            DrawRectangle(i * 17, 10, 16, 16, RED);
         }
 
-        BeginDrawing();
+        /* Close game on player death */
+        if (player.health <= 0)
+        {
+            EndDrawing();
+            CloseWindow();
+            return 0;
+        }
+
+        DrawRectangle(player.position_vector.x, player.position_vector.y, player.width, player.height, WHITE);
+        DrawRectangle(enemy.position_vector.x, enemy.position_vector.y, enemy.width, enemy.height, BLUE);
+
         ClearBackground(BLACK);
         EndDrawing();
         //----------------------------------------------------------------------------------
