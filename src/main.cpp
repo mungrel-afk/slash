@@ -1,6 +1,8 @@
 #include "raylib.h"
 #include "raymath.h"
+#include <cmath>
 #include <cstdint>
+#include <cstdio>
 using namespace std;
 
 typedef int8_t i8;
@@ -16,10 +18,13 @@ typedef uint64_t u64;
 struct Entity
 {
     Vector2 position_vector;
+    Vector2 direction_vector;
     int width;
     int height;
     float speed;
     int health;
+    int attack_range = 128;
+    float attack_arc = 120.00; // 120deg arc from the
 };
 
 struct game_state
@@ -45,8 +50,11 @@ int main()
     SetTargetFPS(targetFPS);
 
     /* Player Stuff */
-    Entity player = {
-        .position_vector = {screenWidth / 2, screenHeight / 2}, .width = 32, .height = 32, .speed = 32.0f, .health = 3};
+    Entity player = {.position_vector = {screenWidth / 2, screenHeight / 2},
+                     .width = 32,
+                     .height = 32,
+                     .speed = 128.0f,
+                     .health = 3};
 
     Entity enemy = {.position_vector = {100, 100}, .width = 32, .height = 64, .speed = 16.0f, .health = 1};
 
@@ -77,17 +85,24 @@ int main()
             player.position_vector.x += player.speed * deltaTime;
         }
 
-        /* Attack */
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        /* Attack
+         * The main idea for an Attack is that the player creates a hitbox in the direction they're facing then when
+         * that hitbox overlaps with the enemies hurtbox it substracts some amount of health */
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
-            // Get a vector from player to target enemy
-            float player_to_enemy_distance = Vector2Distance(player.position_vector, enemy.position_vector);
+            Vector2 facing_vector = Vector2Subtract(GetMousePosition(), player.position_vector);
 
-            // check if the length to the target is less than the attack range
+            Vector2 player_center = {player.position_vector.x + player.width / 2,
+                                     player.position_vector.y + player.height / 2};
 
-            // check if player is facing enemy direction
+            player.direction_vector = Vector2Normalize(facing_vector);
 
-            // use half angle cosine to see if enemy is within attack cone
+            float angle = atan2(player.direction_vector.y, player.direction_vector.x);
+
+            Vector2 hitbox_vector = {player_center.x + (player.direction_vector.x * player.attack_range),
+                                     player_center.y + (player.direction_vector.y * player.attack_range)};
+
+            DrawLine(player_center.x, player_center.y, hitbox_vector.x, hitbox_vector.y, WHITE);
         }
 
         if (IsKeyPressed(KEY_R))
